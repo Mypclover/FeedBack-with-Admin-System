@@ -19,10 +19,10 @@ Feedback System is a application developed using PHP
 Feedback System uses a number of open source projects to work properly:
 
 * [Bracket Editor](http://brackets.io/) - awesome web-based text editor
-* [Twitter Bootstrap] - great UI boilerplate for modern web apps
+* [Twitter Bootstrap](https://getbootstrap.com/) - great UI boilerplate for modern web apps
 * [php](https://www.php.net/) - PHP for Front-End
 * [phpmyadmin](https://www.phpmyadmin.net/) - Database to store the values
-* [jQuery] - duh
+* [jQuery](https://jquery.com/) - Jquery
 
 And of course Feedback System itself is open source with a [public repository](https://github.com/Mypclover/FeedBack-with-Admin-System)
  on GitHub.
@@ -32,3 +32,4 @@ And of course Feedback System itself is open source with a [public repository](h
 - In the browser go to localhost/[your_website_directory]/_init.php
 - Thats all Done.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
