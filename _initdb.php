@@ -19,6 +19,7 @@
               time TIME,
               feedback TEXT,
 			  status varchar(255) DEFAULT 'In Progress',
+			  remarks varchar(255),
               PRIMARY KEY (id)
               )";
     if (mysqli_query($connection, $query)) {

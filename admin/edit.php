@@ -80,7 +80,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                                     <div class="drop-down dropdown-profile">
                                         <div class="dropdown-content-body">
                                             <ul>
-                                                <li><a href="logout.php"><i class="ti-power-off"></i> <span>Logout</span></a></li>
+                                                <li><a href="#"><i class="ti-power-off"></i> <span>Logout</span></a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -115,7 +115,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                             <div class="page-title">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                                    <li class="breadcrumb-item active">Feedback Display</li>
+                                    <li class="breadcrumb-item active">Feedback Update Form</li>
                                 </ol>
                             </div>
                         </div>
@@ -128,44 +128,59 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         <div class="col-lg-12">
                             <div class="card">
                                 <div class="card-title">
-                                    <h4>Feedback Table </h4>
+                                    <h4>Edit Form</h4>
                                     
                                 </div>
                                 <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Feedback</th>
-                                                    <th>Date</th>
-                                                    <th>Status</th>                                                    
-                                                    <th>Remarks</th>                                                    
-                                                    <th>Edit</th>                                                    
-                                                </tr>
-                                            </thead>
-                                            
-                                            
-                                                    <?php
-                                            $conn = mysqli_connect("localhost", "root", "", "anonymous");
-                                              // Check connection
-                                              if ($conn->connect_error) {
-                                               die("Connection failed: " . $conn->connect_error);
-                                              } 
-                                              $count = 1;
-                                              $sql = "SELECT * FROM feed";
-                                              $result = $conn->query($sql);
-                                              if ($result->num_rows > 0) {
-                                               // output data of each row
-                                               while($row = $result->fetch_assoc()) {
-                                                echo "<tbody><tr><th scope='row'>".$count++."</th><td>" . $row['feedback'] . "</td><td>".$row['date']."</td><td><span class='badge badge-primary'>".$row['status']."</span></td><td>".$row['remarks']."</td>";
-                                                echo "<td><a href='edit.php?edit=".$row['id']."'<i class='fa fa-pencil-square-o fa-2x'></i></td></tr></tbody>";
-                                                   
+                                    <div class="horizontal-form">
+                                        <form class="form-horizontal" method="post">
+                                            <?php
+                                                if(isset($_GET['edit']))
+                                                {	$db = mysqli_connect('localhost','root', '','anonymous');
+                                                      $id = $_GET['edit'];
+                                                    $sel="select * from feed where id='$id'";
+                                                    $kl=mysqli_query($db,$sel);
+                                                    $name=mysqli_fetch_assoc($kl);
+                                            ?>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">Feedback</label>
+                                                <div class="col-sm-10">
+                                                    <input type="textarea" name="feedback" readonly class="form-control" value="<?php echo $name['feedback']; ?>" >
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">Date</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text"  readonly name="date" class="form-control" value="<?php echo $name['date']; ?>">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">Status</label>
+                                                <div class="col-sm-10">
+                                                    <select name="status" class="form-control">
+															<option>In Progress</option>
+															<option>Resolved</option>
+															<option>Reopen</option>
+														</select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">Remarks</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" name="remarks" class="form-control" value="<?php echo $name['remarks']; ?>" placeholder="Remarks">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-offset-2 col-sm-10">
+                                                    <button type="submit" name="update" class="btn btn-default">Update</button>
+                                                    <button type="submit" name="delete" class="btn btn-default">Delete</button>
+                                                </div>
+                                            </div>
+                                            <?php	
                                             }
-                                            echo "</table>";
-                                            } else { echo "0 results"; }
-                                            $conn->close();
-                                            ?> 
+
+                                            ?>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -176,6 +191,29 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         <!-- /# column -->
                     
                     <!-- /# row -->
+                    
+                    <?php
+                        if(isset($_POST['update']))
+                        {
+                        $db = mysqli_connect('localhost','root', '','anonymous');
+                            $get=$_POST['status'];
+                            $gets=$_POST['remarks'];
+                            $id=$_GET['edit'];
+                            $query="UPDATE feed set status='".$get."' , remarks='".$gets."' WHERE id ='$id'";
+                            $update=mysqli_query($db,$query);
+                            echo "<script>window.open('table.php ','_self')</script>";
+                        }
+                    
+                        if(isset($_POST['delete']))
+                        {
+                        $db = mysqli_connect('localhost','root', '','anonymous');
+                            $id=$_GET['edit'];
+                            $query="DELETE FROM feed WHERE id='$id'";
+                            $update=mysqli_query($db,$query);
+                            echo "<script>window.open('table.php ','_self')</script>";
+                        }
+                       ?>
+                    
 
                     <div class="row">
                         <div class="col-lg-12">

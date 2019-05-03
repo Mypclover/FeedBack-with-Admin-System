@@ -1,3 +1,13 @@
+<?php
+// Initialize the session
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +16,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Focus Admin: Data Table</title>
+    <title>Expeditors Feedback System | Admin Pannel </title>
 
     <!-- ================= Favicon ================== -->
     <!-- Standard -->
@@ -44,7 +54,7 @@
                         <li class="label">Apps</li>
                         <li><a href="table.php" class="label"><i class="fa fa-television"></i> Table </a></li>
                        <li class="active"><a href="reports.php" class="label"><i class="ti-layout-grid4-alt"></i> Report </a></li>
-                        <li><a><i class="ti-close"></i> Logout</a></li>
+                        <li><a href="logout.php"><i class="ti-close"></i> Logout</a></li>
                     </ul>
                 </div>
             </div>
@@ -71,7 +81,7 @@
                                     <div class="drop-down dropdown-profile">
                                         <div class="dropdown-content-body">
                                             <ul>
-                                                <li><a href="#"><i class="ti-power-off"></i> <span>Logout</span></a></li>
+                                                <li><a href="logout.php"><i class="ti-power-off"></i> <span>Logout</span></a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -103,7 +113,7 @@
                             <div class="page-title">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                                    <li class="breadcrumb-item active">Table-Export</li>
+                                    <li class="breadcrumb-item active">Feedback-Export</li>
                                 </ol>
                             </div>
                         </div>
@@ -124,6 +134,7 @@
                                                     <th>Feedback</th>
                                                     <th>Date</th>
                                                     <th>Status</th>                                                    
+                                                    <th>Remarks</th>                                                    
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -134,12 +145,12 @@
                                                die("Connection failed: " . $conn->connect_error);
                                               } 
                                               $count = 1;
-                                              $sql = "SELECT name, date,feedback,status FROM feed";
+                                              $sql = "SELECT * FROM feed";
                                               $result = $conn->query($sql);
                                               if ($result->num_rows > 0) {
                                                // output data of each row
                                                while($row = $result->fetch_assoc()) {
-                                                echo "<tr><td>".$count++."</td><td>" . $row['feedback'] . "</td><td>".$row['date']."</td><td>".$row['status']."</td>";
+                                                echo "<tr><td>".$count++."</td><td>" . $row['feedback'] . "</td><td>".$row['date']."</td><td>".$row['status']."</td><td>".$row['remarks']."</td>";
                                                    
                                             }
                                             echo "</table>";
@@ -160,7 +171,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="footer">
-                                <p>2018 © Admin Board. - <a href="#">example.com</a></p>
+                                <p><?php echo date("Y"); ?> © Admin Pannel. - <a href="#">Expeditors.com</a></p>
                             </div>
                         </div>
                     </div>

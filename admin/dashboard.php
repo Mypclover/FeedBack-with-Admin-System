@@ -1,3 +1,14 @@
+<?php
+// Initialize the session
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +17,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Feedback | Admin Pannel </title>
+        <title>Expeditors Feedback System | Admin Pannel </title>
 
         <!-- ================= Favicon ================== -->
         <!-- Standard -->
@@ -47,7 +58,7 @@
                         <li class="label">Apps</li>
                         <li><a href="table.php" class="label"><i class="fa fa-television"></i> Table </a></li>
                         <li><a href="reports.php" class="label"><i class="ti-layout-grid4-alt"></i> Report </a></li>
-                        <li><a><i class="ti-close"></i> Logout</a></li>
+                        <li><a href="logout.php"><i class="ti-close"></i> Logout</a></li>
                     </ul>
                 </div>
             </div>
@@ -72,7 +83,7 @@
                                     <div class="drop-down dropdown-profile">
                                         <div class="dropdown-content-body">
                                             <ul>
-                                                <li><a href="#"><i class="ti-power-off"></i> <span>Logout</span></a></li>
+                                                <li><a href="logout.php"><i class="ti-power-off"></i> <span>Logout</span></a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -153,10 +164,16 @@
                                             $results = $conn->query($totalfeed);
                                             $row_cnt = $result->num_rows;
                                             $tres = $results->num_rows;
-                                        echo "<div class='stat-digit'>".$row_cnt."</div>";
-                                        
-                                            $progress = $row_cnt/$tres * 100;
-                                            $value = substr($progress,0,2);                                            
+                                        echo "<div class='stat-digit'> <i class='fa fa-comments'></i>".$row_cnt."</div>";
+                                            if($tres > 0)
+                                            {
+                                                $progress = $row_cnt/$tres * 100;
+                                                $value = substr($progress,0,2);                                            
+                                            }else
+                                            {
+                                                $value=0;
+                                            }
+                                            
                                         echo "</div>";
                                         echo "<div class='progress'>";
                                         echo "<div class='progress-bar progress-bar-primary w-".$value."' role='progressbar' aria-valuenow='78' aria-valuemin='0' aria-valuemax='100'></div>";
@@ -183,9 +200,15 @@
                                             $results = $conn->query($totalfeed);
                                             $row_cnt = $result->num_rows;
                                             $tres = $results->num_rows;
-                                            echo "<div class='stat-digit'>".$row_cnt."</div>";
-                                            $progress = $row_cnt/$tres * 100;
-                                            $value = substr($progress,0,2);  
+                                            echo "<div class='stat-digit'> <i class='fa fa-comments'></i>".$row_cnt."</div>";
+                                            if($tres > 0)
+                                            {
+                                                $progress = $row_cnt/$tres * 100;
+                                                $value = substr($progress,0,2);
+                                            }else{
+                                            
+                                            $value=0;
+                                            }
                                             
                                         echo "</div>";
                                         echo "<div class='progress'>";
@@ -200,16 +223,117 @@
                                 <div class="card">
                                     <div class="stat-widget-two">
                                         <div class="stat-content">
-                                            <div class="stat-text">Task Completed</div>
-                                            <div class="stat-digit"> <i class="fa fa-usd"></i>650</div>
-                                        </div>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-danger w-65" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                                            <div class="stat-text">Issues Reopened</div>
+                                            <?php
+                                            $conn = mysqli_connect("localhost", "root", "", "anonymous");
+                                              // Check connection
+                                              if ($conn->connect_error) {
+                                               die("Connection failed: " . $conn->connect_error);
+                                              }
+                                            $totalfeed ="SELECT * FROM feed where status='closed'";
+                                            $sql = "SELECT * FROM feed WHERE status ='Reopen'";
+                                            $result = $conn->query($sql);
+                                            $results = $conn->query($totalfeed);
+                                            $row_cnt = $result->num_rows;
+                                            $tres = $results->num_rows;
+                                            echo "<div class='stat-digit'> <i class='fa fa-comments'></i>".$row_cnt."</div>";
+                                            if($tres > 0)
+                                            {
+                                                $progress = $row_cnt/$tres * 100;
+                                            }
+                                            $progress =0;
+                                            $value = substr($progress,0,2);    
+                                            
+                                        echo "</div>";
+                                        echo "<div class='progress'>";
+                                        echo "<div class='progress-bar progress-bar-warning w-".$value."' role='progressbar' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'></div>";
+                                            $conn->close();
+                                            ?>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- /# card -->
                             </div>
+                            <div class="col-lg-6">                                         
+                                <h6>Last Two days Feebacks</h6>
+                            <div class="card bg-primary">
+                            <div class="testimonial-widget-one">
+                                <div class="owl-carousel owl-theme">
+                                    <?php
+                                    $conn = mysqli_connect("localhost", "root", "", "anonymous");
+                                    // Check connection
+                                    if ($conn->connect_error) {
+                                    die("Connection failed: " . $conn->connect_error);
+                                    }
+                                    $sql ="select feedback , name from feed where date >= (DATE(NOW()) - INTERVAL 2 DAY)";
+                                    $result = $conn->query($sql);
+                                    if ($result->num_rows > 0) {
+                                    // output data of each row
+                                    while($row = $result->fetch_assoc()) { 
+                                  echo "<div class='item'>";
+                                   echo "<div class='testimonial-content'>";
+                                    echo "<div class='testimonial-text'>";
+                                                echo "<i class='fa fa-quote-left'>    ".$row['feedback']."    </i> <i class='fa fa-quote-right'></i>";
+                                                echo "</div>";
+                                                echo "<img class='testimonial-author-img' src='assets/images/avatar/1.jpg' alt='' />";
+                                                echo "<div class='testimonial-author' style='color:white;'>".$row['name']."</div>";
+                                                echo "<div class='testimonial-author-position'>Expeditors Employee</div>"; 
+                                        echo "</div>";
+                                        echo "</div>";
+                                        }} else { echo "0 results"; }
+                                                    $conn->close();
+                                                    ?> 
+                                    </div>
+                                </div>
+                            </div>
+                                                
+                        </div>
+                            <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-title">
+                                    <h4>Feedback Table </h4>
+                                    
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Feedback</th>
+                                                    <th>Date</th>
+                                                    <th>Status</th>                                                    
+                                                    <th>Remarks</th>                                                    
+                                                </tr>
+                                            </thead>
+                                            
+                                            
+                                                    <?php
+                                            $conn = mysqli_connect("localhost", "root", "", "anonymous");
+                                              // Check connection
+                                              if ($conn->connect_error) {
+                                               die("Connection failed: " . $conn->connect_error);
+                                              } 
+                                              $count = 1;
+                                              $sql = "SELECT * FROM feed";
+                                              $result = $conn->query($sql);
+                                              if ($result->num_rows > 0) {
+                                               // output data of each row
+                                               while($row = $result->fetch_assoc()) {
+                                                echo "<tbody><tr><th scope='row'>".$count++."</th><td>" . $row['feedback'] . "</td><td>".$row['date']."</td><td><span class='badge badge-primary'>".$row['status']."</span></td><td>".$row['remarks']."</td>";
+                                                echo "</tr></tbody>";
+                                                   
+                                            }
+                                            echo "</table>";
+                                            } else { echo "0 results"; }
+                                            $conn->close();
+                                            ?> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            
+                            
                             <!-- /# column -->
                         </div>
                         <!-- /# row -->
@@ -220,7 +344,7 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="footer">
-                                    <p>2018 © Admin Board. - <a href="#">Expeditors.com</a></p>
+                                    <p><?php echo date("Y"); ?> © Admin Panel. - <a href="#">Expeditors.com</a></p>
                                 </div>
                             </div>
                         </div>
