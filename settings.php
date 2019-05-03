@@ -2,13 +2,13 @@
 date_default_timezone_set("Europe/Berlin");
 
 $mail_server = "smtp.gmail.com";
-$mail_user = "archuravi625@gmail.com";
+$mail_user = "email@gmail.com";
 $mail_port = "587";
-$mail_pw = "archubaby";
+$mail_pw = "password";
 
 $sender_friendlyname = "Feedback-Mail";
-$sender_mail = "archuravi625@gmail.com";
-$recipient_mail = "naveencreater106@gmail.com";
+$sender_mail = "email@gmail.com";
+$recipient_mail = "email@gmail.com";
 $mail_subject = "[Feedback] New Entry";
 
 $sql_server = "localhost";
